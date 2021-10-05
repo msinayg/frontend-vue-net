@@ -15,7 +15,6 @@
               v-model="empleado.codigo"
               id="codigo"
               placeholder="E001"
-              
             />
           </div>
           <div class="mb-3">
@@ -27,7 +26,6 @@
               v-model="empleado.nombres"
               id="nombres"
               placeholder="Nombres"
-              
             />
           </div>
           <div class="mb-3">
@@ -39,7 +37,6 @@
               v-model="empleado.apellidos"
               id="apellidos"
               placeholder="Apellidos"
-              
             />
           </div>
           <div class="mb-3">
@@ -51,7 +48,6 @@
               v-model="empleado.direccion"
               id="direccion"
               placeholder="Calle #1"
-              
             />
           </div>
           <div class="mb-3">
@@ -63,7 +59,6 @@
               v-model="empleado.telefono"
               valueid="telefono"
               placeholder="1290-6078"
-              
             />
           </div>
           <div class="mb-3">
@@ -77,26 +72,23 @@
               v-model="empleado.fecha_nacimiento"
               valueid="fecha_nacimiento"
               placeholder="2000/03/11"
-              
             />
           </div>
           <div class="mb-3">
             <label for="puesto" class="form-label">Puesto:</label>
-            <input
-              type="number"
-              class="form-control"
-              name="puesto"
-              v-model="empleado.id_puesto"
-              valueid="puesto"
-              placeholder="1"
-              
-            />
+            <select v-model="empleado.id_puesto" class="form-control">
+              <option v-for="puesto in puestos" v-bind:key="puesto.id_puesto" v-bind:value="puesto.id_puesto">
+                {{ puesto.puesto }}
+              </option>
+            </select>
           </div>
           <div class="btn-group" role="group" aria-label="">
             <button type="submit" class="btn btn-success">
               Agregar
             </button>
-            <router-link to="/empleados/ListarEmpleados" class="btn btn-danger" >Cancelar</router-link>
+            <router-link to="/empleados/ListarEmpleados" class="btn btn-danger"
+              >Cancelar</router-link
+            >
           </div>
         </form>
       </div>
@@ -108,34 +100,45 @@ export default {
   data() {
     return {
       empleado: {},
+      puestos: []
     };
   },
+  created: function() {
+    this.consultarPuestos();
+  },
   methods: {
+    consultarPuestos() {
+      fetch("https://localhost:5001/api/puestos")
+        .then((response) => response.json())
+        .then((dataResponsive) => {
+          this.puestos = [];
+          this.puestos = dataResponsive;
+        })
+        .catch(console.log);
+    },
     agregarEmpleado() {
-      //console.log(this.product);
-
-      // const empleado = {
-      //   // id_empleado: this.empleado.id_empleado,
-      //   codigo: this.empleado.codigo,
-      //   nombres: this.empleado.nombres,
-      //   apellidos: this.empleado.apellidos,
-      //   direccion: this.empleado.direccion,
-      //   telefono: this.empleado.telefono,
-      //   fecha_nacimiento: this.empleado.fecha_nacimiento,
-      //   id_puesto: this.empleado.id_puesto
-      // };
-
+      const e = {
+        //id_empleado: this.empleado.id_empleado,
+        codigo: this.empleado.codigo,
+        nombres: this.empleado.nombres,
+        apellidos: this.empleado.apellidos,
+        direccion: this.empleado.direccion,
+        telefono: this.empleado.telefono,
+        fecha_nacimiento: this.empleado.fecha_nacimiento,
+        id_puesto: this.empleado.id_puesto,
+      };
+      
       fetch("https://localhost:5001/api/empleados", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(this.empleado),
+        body: JSON.stringify(e),
       })
         //.then((response) => response.json())
         .then((dataResponsive) => {
           console.log(dataResponsive);
-          //window.location.href = "ListarEmpleados";
+          window.location.href = "ListarEmpleados";
         });
     },
   },

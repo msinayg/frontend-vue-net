@@ -95,7 +95,7 @@
                       type="text"
                       class="form-control"
                       name="puesto"
-                      v-model="empleado.id_puesto"
+                      v-model="empleado.puesto"
                       valueid="puesto"
                       placeholder="1"
                       readonly
@@ -138,7 +138,7 @@
               <td>{{ empleado.direccion }}</td>
               <td>{{ empleado.telefono }}</td>
               <td>{{ empleado.fecha_nacimiento }}</td>
-              <td>{{ empleado.id_puesto }}</td>
+              <td>{{ empleado.puesto.puesto }}</td>
               <td>
                 <router-link :to="{name:'EditarEmpleado', params:{id:empleado.id_empleado}} " class="btn btn-warning">Editar</router-link>
                 <a
@@ -214,7 +214,8 @@ export default {
         .then((response) => response.json())
         .then((dataResponsive) => {
           console.log(dataResponsive);
-          this.product = dataResponsive;
+          this.empleado = dataResponsive;
+          console.log(this.empleado);
           window.location.href = "EditarEmpleado";
         })
         .catch(console.log);

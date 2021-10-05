@@ -2,7 +2,7 @@
   <div class="container">
     <div class="card">
       <div class="card-header">
-        Editar producto
+        Editar empleado
       </div>
       <div class="card-body">
         <form v-on:submit.prevent="editarEmpleado">
@@ -82,15 +82,19 @@
           </div>
           <div class="mb-3">
             <label for="puesto" class="form-label">Puesto:</label>
-            <input
+            <!-- <input
               type="text"
               class="form-control"
               name="puesto"
-              v-model="empleado.id_puesto"
+              v-model="empleado.puesto"
               valueid="puesto"
               placeholder="1"
-              
-            />
+            /> -->
+            <select v-model="empleado.id_puesto" class="form-control">
+              <option v-for="puesto in puestos" v-bind:key="puesto.id_puesto" v-bind:value="puesto.id_puesto">
+                {{ puesto.puesto }}
+              </option>
+            </select>
           </div>
           <div class="btn-group" role="group" aria-label="">
             <button type="submit" class="btn btn-success">
@@ -108,12 +112,23 @@ export default {
   data() {
     return {
       empleado: {},
+      puestos:[]
     };
   },
   created: function() {
+    this.consultarPuestos();
     this.buscarEmpleado();
   },
   methods: {
+    consultarPuestos() {
+      fetch("https://localhost:5001/api/puestos")
+        .then((response) => response.json())
+        .then((dataResponsive) => {
+          this.puestos = [];
+          this.puestos = dataResponsive;
+        })
+        .catch(console.log);
+    },
     buscarEmpleado() {
       fetch("https://localhost:5001/api/empleados/" + this.$route.params.id)
         .then((response) => response.json())
@@ -133,6 +148,7 @@ export default {
         telefono: this.empleado.telefono,
         fecha_nacimiento: this.empleado.fecha_nacimiento,
         id_puesto: this.empleado.id_puesto,
+        puesto: this.empleado.puesto
       };
       fetch("https://localhost:5001/api/empleados", {
         method: "PUT",
@@ -144,7 +160,7 @@ export default {
         //.then((respuesta) => respuesta)
         .then((dataResponsive) => {
           console.log(dataResponsive);
-          window.location.href = "../ListProducts";
+          window.location.href = "../ListarEmpleados";
         });
     },
   },
