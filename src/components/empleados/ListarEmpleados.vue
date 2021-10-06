@@ -78,7 +78,9 @@
                     />
                   </div>
                   <div class="mb-3">
-                    <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento:</label>
+                    <label for="fecha_nacimiento" class="form-label"
+                      >Fecha de nacimiento:</label
+                    >
                     <input
                       type="text"
                       class="form-control"
@@ -95,7 +97,7 @@
                       type="text"
                       class="form-control"
                       name="puesto"
-                      v-model="empleado.puesto"
+                      v-model="puesto.puesto"
                       valueid="puesto"
                       placeholder="1"
                       readonly
@@ -140,7 +142,14 @@
               <td>{{ empleado.fecha_nacimiento }}</td>
               <td>{{ empleado.puesto.puesto }}</td>
               <td>
-                <router-link :to="{name:'EditarEmpleado', params:{id:empleado.id_empleado}} " class="btn btn-warning">Editar</router-link>
+                <router-link
+                  :to="{
+                    name: 'EditarEmpleado',
+                    params: { id: empleado.id_empleado },
+                  }"
+                  class="btn btn-warning"
+                  >Editar</router-link
+                >
                 <a
                   name=""
                   id=""
@@ -165,6 +174,11 @@
             </tr>
           </tbody>
         </table>
+        <div id="nav">
+          <router-link class="btn btn-success" to="/empleados/CrearEmpleado"
+            >Crear empleado</router-link
+          >
+        </div>
       </div>
     </div>
   </div>
@@ -175,12 +189,22 @@ export default {
     return {
       empleados: [],
       empleado: {},
+      puesto: {}
     };
   },
   created: function() {
     this.consultarEmpleados();
   },
   methods: {
+    consultarPuesto() {
+      fetch("https://localhost:5001/api/puestos/" + this.empleado.id_puesto)
+        .then((response) => response.json())
+        .then((dataResponsive) => {
+          console.log(dataResponsive);
+          this.puesto = dataResponsive;
+        })
+        .catch(console.log);
+    },
     consultarEmpleados() {
       fetch("https://localhost:5001/api/empleados")
         .then((response) => response.json())
@@ -196,7 +220,7 @@ export default {
       })
         .then((dataResponsive) => {
           console.log(dataResponsive);
-          window.location.href = "ListarEmpleados";
+          window.location.href = "Home";
         })
         .then((res) => console.log(res));
     },
@@ -206,6 +230,7 @@ export default {
         .then((dataResponsive) => {
           console.log(dataResponsive);
           this.empleado = dataResponsive;
+          this.consultarPuesto();
         })
         .catch(console.log);
     },
@@ -215,7 +240,6 @@ export default {
         .then((dataResponsive) => {
           console.log(dataResponsive);
           this.empleado = dataResponsive;
-          console.log(this.empleado);
           window.location.href = "EditarEmpleado";
         })
         .catch(console.log);
